@@ -18,9 +18,9 @@ const LAUNCH_PUPPETEER_OPTS = {
 	]
 }
 const PAGE_PUPPETEER_OPTS = {
-	networkIdle2Timeout: 5000,
 	waitUntil: 'load',
-	timeout: 3000000
+	networkIdle2Timeout: 500,
+	timeout: 120000
 }
 puppeteer.use(StealthPlugin())
 
@@ -30,9 +30,10 @@ export async function getContent (data) {
 
 	for(const item of data) {
 
+		console.log(item['URL'])
+		const browser = await puppeteer.launch(LAUNCH_PUPPETEER_OPTS)
+
 		try {
-			console.log(item['URL'])
-			const browser = await puppeteer.launch(LAUNCH_PUPPETEER_OPTS)
 			const page = await browser.newPage()
 			await page.goto(item['URL'], PAGE_PUPPETEER_OPTS)
 			const content = await page.content()
@@ -49,12 +50,14 @@ export async function getContent (data) {
 			}
 
 			console.log(result.length)
-
-			await browser.close()
+			page.close()
 		}
 		catch (error) {
 			console.log('Error from gunc getContent - ' + item['URL'])
 			console.log(error);
+		}
+		finally {
+			await browser.close()
 		}
 	}
 	return result
