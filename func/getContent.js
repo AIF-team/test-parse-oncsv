@@ -50,12 +50,11 @@ export async function getContent (data) {
 
 			console.log(result.length)
 
-			browser.close()
+			await browser.close()
 		}
 		catch (error) {
 			console.log('Error from gunc getContent - ' + item['URL'])
 			console.log(error);
-			browser.close()
 		}
 	}
 	return result
