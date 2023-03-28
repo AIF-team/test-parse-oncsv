@@ -14,7 +14,7 @@ Dir profile:
   For caching the chromium profile
 
 Dir build:
-  ready-made files with the default name "Petrivich"
+  ready-made files with the default name "Petrovich"
 
 Dir data:
   Tables for parsing will be taken from this folder (Recommended limit: 500kb)
