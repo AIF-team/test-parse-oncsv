@@ -36,6 +36,19 @@ export async function getContent (data, proxy) {
 			password: proxy.password,
 		})
 		try {
+			await page.setRequestInterception(true)
+			page.on('request', interceptedRequest => {
+				if (interceptedRequest.isInterceptResolutionHandled()) return;
+				if (
+				  interceptedRequest.url().endsWith('.png') ||
+				  interceptedRequest.url().endsWith('.jpg') ||
+				  interceptedRequest.url().endsWith('.gif') ||
+				  interceptedRequest.url().endsWith('.woff2')
+				)
+				  interceptedRequest.abort();
+				else interceptedRequest.continue();
+			});
+
 			await page.goto(item['URL'] + '#properties', PAGE_PUPPETEER_OPTS)
 			const content = await page.content()
 			const errorPage = await page.$('.page__404')
@@ -46,12 +59,13 @@ export async function getContent (data, proxy) {
 				console.log(`Page 404. Товар ${item['Название']} по ссылки: ${item['URL']}`)
 			}
 
-			console.log(item['URL'])
 			console.log(result.length)
+			console.log(item['URL'])
 			console.log(proxy.url)
 		}
 		catch (error) {
 			console.log('Error from gunc getContent - ' + item['URL'])
+			console.log(proxy.url)
 			console.log(error);
 		}
 		finally {
