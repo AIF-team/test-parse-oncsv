@@ -19,7 +19,6 @@ const proxy2 = proxyServers.proxy2
 
 
 const time = new Date()
-console.log('Час: ' + time.getHours() + ', Мин: ' + time.getMinutes())
 
 
 if(cluster.isPrimary) {
@@ -27,6 +26,7 @@ if(cluster.isPrimary) {
         cluster.fork()
     }
 } else if (cluster.worker.id === 1) {
+    console.log('Час: ' + time.getHours() + ', Мин: ' + time.getMinutes())
     const data = readFiles(dirCsv)
     const dataParse = await getContent(data, proxy1)
     writeFiles(buildCsv, dataParse)

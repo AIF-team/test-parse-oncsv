@@ -17,7 +17,7 @@ export async function getContent (data, proxy) {
 	const browser = await puppeteer.launch({
 		headless: true,
 		defaultViewport: false,
-		userDataDir: './profile/',
+		userDataDir: proxy.profile,
 		args: [
 			proxy.url,
 			'--no-sandbox',
@@ -30,7 +30,6 @@ export async function getContent (data, proxy) {
 	})
 
 	for(const item of data) {
-		console.log(item['URL'])
 		const page = await browser.newPage()
 		await page.authenticate({
 			username: proxy.login,
@@ -47,7 +46,9 @@ export async function getContent (data, proxy) {
 				console.log(`Page 404. Товар ${item['Название']} по ссылки: ${item['URL']}`)
 			}
 
+			console.log(item['URL'])
 			console.log(result.length)
+			console.log(proxy.url)
 		}
 		catch (error) {
 			console.log('Error from gunc getContent - ' + item['URL'])
