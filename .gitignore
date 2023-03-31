@@ -1,7 +1,5 @@
 node_modules
 srcData
 profile
-build
-data
-data2
+*.csv
 .DS_Store
