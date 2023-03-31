@@ -4,20 +4,8 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { scraping } from './scraping.js'
 
 
-const LAUNCH_PUPPETEER_OPTS = {
-	// headless: false,
-	defaultViewport: false,
-	userDataDir: './profile/',
-	args: [
-		'--proxy-server=176.124.46.105:8000',
-		'--no-sandbox',
-		'--disable-setuid-sandbox',
-		'--disable-dev-shm-usage',
-		'--disable-accelerated-2d-canvas',
-		'--disable-gpu',
-		'--window-size=1920x1080'
-	]
-}
+const LAUNCH_PUPPETEER_OPTS = 
+
 const PAGE_PUPPETEER_OPTS = {
 	networkIdle2Timeout: 500,
 	timeout: 120000
@@ -25,20 +13,33 @@ const PAGE_PUPPETEER_OPTS = {
 puppeteer.use(StealthPlugin())
 
 
-export async function getContent (data) {
+export async function getContent (data, proxy) {
 	const result = []
-	const browser = await puppeteer.launch(LAUNCH_PUPPETEER_OPTS)
+
+	const browser = await puppeteer.launch({
+		headless: true,
+		defaultViewport: false,
+		userDataDir: './profile/',
+		args: [
+			proxy.url,
+			'--no-sandbox',
+			'--disable-setuid-sandbox',
+			'--disable-dev-shm-usage',
+			'--disable-accelerated-2d-canvas',
+			'--disable-gpu',
+			'--window-size=1920x1080'
+		]
+	})
 
 	for(const item of data) {
 		console.log(item['URL'])
 		const page = await browser.newPage()
 		await page.authenticate({
-			username: '9UQHhE',
-			password: 'uT0VW5',
+			username: proxy.login,
+			password: proxy.password,
 		})
 		try {
 			await page.goto(item['URL'] + '#properties', PAGE_PUPPETEER_OPTS)
-			await page.screenshot({path: 'myip.png'})
 			const content = await page.content()
 			const errorPage = await page.$('.page__404')
 
