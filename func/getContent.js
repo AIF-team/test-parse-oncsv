@@ -4,8 +4,6 @@ import StealthPlugin from 'puppeteer-extra-plugin-stealth'
 import { scraping } from './scraping.js'
 
 
-const LAUNCH_PUPPETEER_OPTS = 
-
 const PAGE_PUPPETEER_OPTS = {
 	networkIdle2Timeout: 500,
 	timeout: 120000
