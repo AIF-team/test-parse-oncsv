@@ -1,23 +1,12 @@
 import cluster from 'cluster'
 
-import { readFiles, writeFiles } from "./func/handlerCsv.js"
-import { getContent } from "./func/getContent.js"
+import { readFiles, writeFiles } from './func/handlerCsv.js'
+import { getContent } from './func/getContent.js'
 import { proxyServers } from './func/proxyservers.js'
+import { pathDir } from './func/path.js'
 
 
-const cunccurency = 2
-
-const dirCsv = './data/'
-const dirCsv2 = './data2/'
-
-const buildCsv = './build/petrovich.csv'
-const buildCsv2 = './build/petrovich2.csv'
-
-const proxy1 = proxyServers.proxy1
-const proxy2 = proxyServers.proxy2
-
-
-
+const cunccurency = 4
 const time = new Date()
 
 
@@ -26,13 +15,29 @@ if(cluster.isPrimary) {
         cluster.fork()
     }
 } else if (cluster.worker.id === 1) {
-    console.log('Час: ' + time.getHours() + ', Мин: ' + time.getMinutes())
-    const data = readFiles(dirCsv)
-    const dataParse = await getContent(data, proxy1)
-    writeFiles(buildCsv, dataParse)
+    console.time('Start prsing path 1 ...')
+    const data = readFiles(pathDir.pathSrc[1])
+    const dataParse = await getContent(data, proxyServers[1])
+    writeFiles(pathDir.pathBuild[1], dataParse)
+    console.timeEnd('Start prsing path 1 ...')
 } else if (cluster.worker.id === 2) {
-    const data = readFiles(dirCsv2)
-    const dataParse = await getContent(data, proxy2)
-    writeFiles(buildCsv2, dataParse)
+    console.time('Start prsing path 2 ...')
+    const data = readFiles(pathDir.pathSrc[2])
+    const dataParse = await getContent(data, proxyServers[2])
+    writeFiles(pathDir.pathBuild[2], dataParse)
+    console.timeEnd('Start prsing path 2 ...')
+} else if (cluster.worker.id === 3) {
+    console.time('Start prsing path 3 ...')
+    const data = readFiles(pathDir.pathSrc[3])
+    const dataParse = await getContent(data, proxyServers[3])
+    writeFiles(pathDir.pathBuild[3], dataParse)
+    console.timeEnd('Start prsing path 3 ...')
+} else if (cluster.worker.id === 4) {
+    console.time('Start prsing path 4 ...')
+    const data = readFiles(pathDir.pathSrc[4])
+    const dataParse = await getContent(data, proxyServers[4])
+    writeFiles(pathDir.pathBuild[4], dataParse)
+    console.timeEnd('Start prsing path 4 ...')
 }
+
 

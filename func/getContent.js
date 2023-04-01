@@ -13,7 +13,6 @@ puppeteer.use(StealthPlugin())
 
 export async function getContent (data, proxy) {
 	const result = []
-
 	const browser = await puppeteer.launch({
 		headless: true,
 		defaultViewport: false,
